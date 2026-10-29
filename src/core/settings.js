@@ -22,6 +22,12 @@ export const DEFAULT_SETTINGS = Object.freeze({
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
+// 배열은 기본값과 길이가 같고 원소 타입(중첩 배열 포함)이 같을 때만 받는다.
+function sameShape(def, v) {
+  if (Array.isArray(def)) return Array.isArray(v) && v.length === def.length && def.every((d, i) => sameShape(d, v[i]));
+  return typeof v === typeof def && (typeof v !== 'number' || Number.isFinite(v));
+}
+
 // 기본값의 구조와 타입을 기준으로 저장된 값을 덮어쓴다. 배열은 통째로 바꾼다.
 function mergeInto(def, saved) {
   if (isPlainObject(def)) {
@@ -30,12 +36,26 @@ function mergeInto(def, saved) {
     for (const k of Object.keys(def)) out[k] = mergeInto(def[k], src[k]);
     return out;
   }
-  if (Array.isArray(def)) return Array.isArray(saved) ? structuredClone(saved) : structuredClone(def);
-  return typeof saved === typeof def ? saved : def;
+  if (Array.isArray(def)) return structuredClone(sameShape(def, saved) ? saved : def);
+  return sameShape(def, saved) ? saved : def;
 }
 
+// 값이 범위를 벗어나면 기본값으로 되돌린다(세션이 멈추거나 시점이 안 돌아가는 값 방지).
+const LIMITS = [
+  [['mouse', 'sens'], (v) => v > 0 && v <= 20],
+  [['mouse', 'dpi'], (v) => v >= 100 && v <= 64000],
+  [['hfov'], (v) => v >= 70 && v <= 130],
+  [['session', 'botCount'], (v) => Number.isInteger(v) && v >= 1 && v <= 500],
+];
+
 export function mergeSettings(saved) {
-  return mergeInto(DEFAULT_SETTINGS, saved);
+  const s = mergeInto(DEFAULT_SETTINGS, saved);
+  for (const [path, ok] of LIMITS) {
+    const parent = path.slice(0, -1).reduce((o, k) => o[k], s);
+    const key = path[path.length - 1];
+    if (!ok(parent[key])) parent[key] = path.reduce((o, k) => o[k], DEFAULT_SETTINGS);
+  }
+  return s;
 }
 
 export function parseSettingsText(text) {

@@ -12,19 +12,21 @@ export function createInput(canvas) {
     onLockChange(cb) {
       lockListeners.push(cb);
     },
+    // 'raw' | 'fallback' | 'failed'. Esc 직후(약 1초)에는 잠금 요청이 거부될 수 있다.
     async requestLock() {
       try {
         await canvas.requestPointerLock({ unadjustedMovement: true });
         input.rawSupported = true;
         return 'raw';
-      } catch {
+      } catch (err) {
+        if (err?.name !== 'NotSupportedError') return 'failed';
         try {
           await canvas.requestPointerLock();
+          input.rawSupported = false;
+          return 'fallback';
         } catch {
-          /* 사용자 제스처가 없으면 실패할 수 있다 */
+          return 'failed';
         }
-        input.rawSupported = false;
-        return 'fallback';
       }
     },
     exitLock() {

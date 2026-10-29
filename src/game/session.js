@@ -66,6 +66,7 @@ export function createSession({ mode, weaponId, judge, armor, settings, ctx, cov
   function spawnBot(cover, now) {
     const model = createBotModel(settings.bot.colors);
     model.setDebug(debug);
+    model.root.userData.role = 'bot';
     ctx.scene.add(model.root);
     const peek = mode === 'peek' ? createPeekBot(cover, settings.peek, ctx.M, rng) : null;
     bot = { cover, model, peek, record: newRecord(cover), seenThisPeek: 0, microT: 0, offset: microCenter(cover) };
@@ -130,6 +131,8 @@ export function createSession({ mode, weaponId, judge, armor, settings, ctx, cov
   }
 
   function finishBot(now) {
+    disposeMesh(highlight);
+    highlight = null;
     const { hp, armor: _armor, ...rec } = bot.record;
     records.push(rec);
     kills++;
@@ -160,6 +163,7 @@ export function createSession({ mode, weaponId, judge, armor, settings, ctx, cov
       new THREE.MeshBasicMaterial({ color: '#00ffff', transparent: true, opacity: 0.9 }),
     );
     highlight.position.set(cover.edge.x, (cover.edge.y + cover.hide.y) / 2, cover.edge.z);
+    highlight.userData.role = 'coverHighlight';
     ctx.scene.add(highlight);
   }
 
@@ -218,7 +222,8 @@ export function createSession({ mode, weaponId, judge, armor, settings, ctx, cov
 
     if (!bot) return;
     const rec = bot.record;
-    if (rec.firstSeenAt === null) markSeen(now);
+    // 숨어 있는 봇에게 쏜 발(벽에 맞음)은 처치 시간 측정을 시작하지 않는다.
+    if (rec.firstSeenAt === null && res.part) markSeen(now);
     const b = classifyBucket(playerFeet(), bot.model.root.position, settings.buckets);
     const distM = eye.distanceTo(bot.model.headWorldPos());
     const damage = res.part ? damageAt(w, res.part, distM) : 0;
@@ -277,7 +282,8 @@ export function createSession({ mode, weaponId, judge, armor, settings, ctx, cov
         }
       }
       if (bot) {
-        placeBot(dt, now);
+        // 엄폐물 표시 중에는 봇이 숨은 채로 기다린다.
+        placeBot(phase === 'highlight' ? 0 : dt, now);
         if (phase !== 'highlight') trackVisibility(now);
       }
       handleFire(now);

@@ -126,3 +126,57 @@ test('micro mode: not shooting fails after the time limit', () => {
   expect(r.failed).toBe(true);
   expect(r.killedAt).toBe(null);
 });
+
+test('peek bot stays hidden while the cover highlight shows, and highlights never leak', () => {
+  const env = setup({ botCount: 3, settings: { session: { botCount: 3, nextBotDelay: [0, 0], coverHighlight: true } } });
+  const { scene, session } = env;
+  const dt = 1 / 120;
+  let spawnAt = null;
+  let maxHighlights = 0;
+  for (let now = 0; now < 60 && !session.isDone(); now += dt) {
+    session.update(dt, now);
+    scene.updateMatrixWorld(true);
+    const hl = [];
+    scene.traverse((o) => o.userData.role === 'coverHighlight' && hl.push(o));
+    maxHighlights = Math.max(maxHighlights, hl.length);
+    const head = find(scene, (o) => o.userData.part === 'head');
+    if (head && spawnAt === null) spawnAt = now;
+    if (head && hl.length) {
+      const root = find(scene, (o) => o.userData.role === 'bot');
+      const c = range.covers.find((x) => Math.abs(x.hide.x - root.position.x) < 1e-6 && Math.abs(x.hide.z - root.position.z) < 1e-6);
+      expect(c, 'bot must sit at its hide spot during highlight').toBeTruthy();
+    }
+    if (head && !hl.length) {
+      aimAt(env.ctx, head.getWorldPosition(new THREE.Vector3()));
+      env.input.pressedThisFrame = true;
+    } else env.input.pressedThisFrame = false;
+  }
+  expect(session.isDone()).toBe(true);
+  expect(maxHighlights).toBeLessThanOrEqual(1);
+  let left = 0;
+  scene.traverse((o) => o.userData.role === 'coverHighlight' && left++);
+  expect(left).toBe(0);
+});
+
+test('a blind shot at a hidden bot does not start the kill clock', () => {
+  const env = setup({ botCount: 1, settings: { peek: { hiddenTime: [1, 1], exposedTime: [0.5, 0.5], wideRatio: 1 } } });
+  const { scene, session, ctx, input } = env;
+  const dt = 1 / 120;
+  let blindAt = null;
+  for (let now = 0; now < 30 && !session.isDone(); now += dt) {
+    input.pressedThisFrame = false;
+    const head = find(scene, (o) => o.userData.part === 'head');
+    if (head) {
+      aimAt(ctx, head.getWorldPosition(new THREE.Vector3()));
+      if (blindAt === null) {
+        blindAt = now;
+        input.pressedThisFrame = true;
+      } else if (now > blindAt + 1.2) input.pressedThisFrame = true;
+    }
+    session.update(dt, now);
+    scene.updateMatrixWorld(true);
+  }
+  const [r] = session.records();
+  expect(r.shots[0].part).toBe(null);
+  expect(r.firstSeenAt).toBeGreaterThan(blindAt + 0.9);
+});

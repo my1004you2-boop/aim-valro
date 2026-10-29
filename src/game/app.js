@@ -129,7 +129,18 @@ export async function startApp(canvas) {
     hud = createHud(ui);
     crosshair.setVisible(true);
     state = 'playing';
-    input.requestLock();
+    lockOrPause();
+  }
+
+  // 잠금이 거부되면(Esc 직후 등) 일시정지 메뉴로 돌아가 다시 시도할 수 있게 한다.
+  // 버튼 클릭이 document 클릭으로도 전달되므로, 진행 중인 요청이 있으면 다시 보내지 않는다.
+  let lockPending = false;
+  async function lockOrPause() {
+    if (lockPending) return;
+    lockPending = true;
+    const result = await input.requestLock();
+    lockPending = false;
+    if (result === 'failed' && state === 'playing' && !input.locked) pause();
   }
 
   function pause() {
@@ -139,7 +150,7 @@ export async function startApp(canvas) {
       onResume() {
         hud = createHud(ui);
         state = 'playing';
-        input.requestLock();
+        lockOrPause();
       },
       onEnd: showResults,
       onMenu: showMenu,
@@ -167,8 +178,8 @@ export async function startApp(canvas) {
   input.onLockChange((locked) => {
     if (!locked) pause();
   });
-  canvas.addEventListener('click', () => {
-    if (state === 'playing' && !input.locked) input.requestLock();
+  document.addEventListener('click', () => {
+    if (state === 'playing' && !input.locked) lockOrPause();
   });
   window.addEventListener('keydown', (e) => {
     if (e.code === 'F9') {

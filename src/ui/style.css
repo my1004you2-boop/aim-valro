@@ -18,6 +18,8 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); c
 #overlay { pointer-events: none; }
 #ui { position: fixed; inset: 0; pointer-events: none; }
 #ui > * { pointer-events: auto; }
+/* HUD는 클릭을 가로채지 않는다(캔버스 클릭으로 포인터를 다시 잠글 수 있어야 함). */
+#ui > .hud { pointer-events: none; }
 #fps { position: fixed; top: 8px; right: 12px; font: 12px/1 Consolas, monospace; color: var(--muted); pointer-events: none; }
 button { font: inherit; color: inherit; cursor: pointer; }
 
