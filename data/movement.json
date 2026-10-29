@@ -1,0 +1,22 @@
+{
+  "source": "vlr.gg/416153 (knife 6.75 m/s), sportskeeda (patch 0.50: accurate below 30% of max speed); 나머지는 커뮤니티 측정값 기반 근사",
+  "patch": "11.x (2026-10 조사)",
+  "approx": ["walkMul", "crouchMul", "accel", "friction", "stopSpeed", "jumpVelocity", "gravity", "airControl", "eyeStand", "eyeCrouch", "height", "crouchHeight", "stepHeight", "crouchTransition"],
+  "runSpeed": 6.75,
+  "walkMul": 0.52,
+  "crouchMul": 0.5,
+  "accurateSpeedFraction": 0.3,
+  "accel": 10,
+  "friction": 9,
+  "stopSpeed": 2.2,
+  "jumpVelocity": 4.6,
+  "gravity": 11.6,
+  "airControl": 0.15,
+  "eyeStand": 1.6,
+  "eyeCrouch": 1.15,
+  "height": 1.85,
+  "crouchHeight": 1.35,
+  "radius": 0.35,
+  "stepHeight": 0.45,
+  "crouchTransition": 0.12
+}
