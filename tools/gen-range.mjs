@@ -6,10 +6,10 @@ const boxes = [];
 const box = (x0, y0, z0, x1, y1, z1, color) =>
   boxes.push({ min: { x: x0, y: y0, z: z0 }, max: { x: x1, y: y1, z: z1 }, ...(color ? { color } : {}) });
 
-const FLOOR = '#3a3f4a';
-const WALL = '#4b5262';
-const COVER = '#5c6578';
-const STEP = '#454c5b';
+const FLOOR = '#474d59';
+const WALL = '#5f6779';
+const COVER = '#8a93a6';
+const STEP = '#5a6170';
 
 // 바닥
 box(-3, -4, -55, 7, 0, 8, FLOOR); // 가운데 통로(구덩이 벽 포함)

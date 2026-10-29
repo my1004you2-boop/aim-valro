@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -50,5 +50,9 @@ function createWindow() {
   else win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'));
 }
 
-app.whenReady().then(createWindow);
+// 기본 메뉴 단축키(Ctrl+W, Ctrl+R 등)가 앉기(Ctrl)+이동과 겹치지 않게 메뉴를 없앤다.
+app.whenReady().then(() => {
+  Menu.setApplicationMenu(null);
+  createWindow();
+});
 app.on('window-all-closed', () => app.quit());
