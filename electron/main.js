@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,6 +8,29 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // 165Hz 이상에서 프레임 제한과 수직동기를 끈다.
 app.commandLine.appendSwitch('disable-frame-rate-limit');
 app.commandLine.appendSwitch('disable-gpu-vsync');
+
+const userFile = (...p) => path.join(app.getPath('userData'), ...p);
+
+async function writeAtomic(file, text) {
+  await fs.mkdir(path.dirname(file), { recursive: true });
+  const tmp = `${file}.tmp`;
+  await fs.writeFile(tmp, text, 'utf8');
+  await fs.rename(tmp, file);
+}
+
+ipcMain.handle('settings:load', async () => {
+  try {
+    return await fs.readFile(userFile('settings.json'), 'utf8');
+  } catch {
+    return null;
+  }
+});
+ipcMain.handle('settings:save', (_e, text) => writeAtomic(userFile('settings.json'), String(text)));
+ipcMain.handle('session:save', (_e, name, text) => {
+  const safe = String(name).replace(/[^\w.-]/g, '_');
+  return writeAtomic(userFile('sessions', safe), String(text));
+});
+ipcMain.handle('app:quit', () => app.quit());
 
 function createWindow() {
   const win = new BrowserWindow({
