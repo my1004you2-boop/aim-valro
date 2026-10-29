@@ -2,6 +2,9 @@ import * as THREE from 'three';
 import { createInput } from './input.js';
 import { createLook } from './look.js';
 import { verticalFovDeg } from '../core/fov.js';
+import { parseCrosshairCode } from '../core/crosshair.js';
+import { DEFAULT_SETTINGS } from '../core/settings.js';
+import { createCrosshairOverlay } from './crosshairView.js';
 
 export function startApp(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -26,6 +29,8 @@ export function startApp(canvas) {
   };
   window.addEventListener('resize', resize);
   resize();
+
+  createCrosshairOverlay(document.getElementById('overlay'), parseCrosshairCode(DEFAULT_SETTINGS.crosshairCode));
 
   const input = createInput(canvas);
   const look = createLook({ sens: 0.194 });
