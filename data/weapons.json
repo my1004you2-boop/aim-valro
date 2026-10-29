@@ -1,0 +1,481 @@
+{
+ "source": "valocheck.com/weapons (fire rate, magazine, base damage), dexerto/dotesports weapon guides (range bands, reload). spread/firingError/recoil/moveSpeedMul는 커뮤니티 수치 기반 근사값",
+ "patch": "11.x (2026-10 조사)",
+ "approx": [
+  "spread",
+  "firingError",
+  "recoil",
+  "moveSpeedMul",
+  "reloadTime"
+ ],
+ "weapons": {
+  "classic": {
+   "name": "Classic",
+   "auto": false,
+   "fireRate": 6.75,
+   "magazine": 12,
+   "reloadTime": 1.75,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 30,
+     "head": 78,
+     "body": 26,
+     "legs": 22
+    },
+    {
+     "maxRange": 999,
+     "head": 66,
+     "body": 22,
+     "legs": 18
+    }
+   ],
+   "spread": {
+    "stand": 0.4,
+    "crouch": 0.34,
+    "walk": 2,
+    "run": 5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 0.6,
+    "max": 3,
+    "recovery": 0.3
+   },
+   "recoil": {
+    "pitchPerShot": 0.5,
+    "yawJitter": 0.15,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "ghost": {
+   "name": "Ghost",
+   "auto": false,
+   "fireRate": 6.75,
+   "magazine": 13,
+   "reloadTime": 1.5,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 30,
+     "head": 105,
+     "body": 30,
+     "legs": 25.5
+    },
+    {
+     "maxRange": 999,
+     "head": 87,
+     "body": 25,
+     "legs": 21
+    }
+   ],
+   "spread": {
+    "stand": 0.3,
+    "crouch": 0.255,
+    "walk": 2,
+    "run": 5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 0.5,
+    "max": 3,
+    "recovery": 0.3
+   },
+   "recoil": {
+    "pitchPerShot": 0.5,
+    "yawJitter": 0.15,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "sheriff": {
+   "name": "Sheriff",
+   "auto": false,
+   "fireRate": 4,
+   "magazine": 6,
+   "reloadTime": 2.25,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 30,
+     "head": 159,
+     "body": 55,
+     "legs": 46.75
+    },
+    {
+     "maxRange": 999,
+     "head": 145,
+     "body": 50,
+     "legs": 42.5
+    }
+   ],
+   "spread": {
+    "stand": 0.25,
+    "crouch": 0.212,
+    "walk": 2.5,
+    "run": 5.5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 1.2,
+    "max": 4,
+    "recovery": 0.4
+   },
+   "recoil": {
+    "pitchPerShot": 1.8,
+    "yawJitter": 0.3,
+    "recoverRate": 5,
+    "approx": true
+   }
+  },
+  "frenzy": {
+   "name": "Frenzy",
+   "auto": true,
+   "fireRate": 10,
+   "magazine": 15,
+   "reloadTime": 1.5,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 20,
+     "head": 78,
+     "body": 26,
+     "legs": 22.1
+    },
+    {
+     "maxRange": 999,
+     "head": 63,
+     "body": 21,
+     "legs": 17.85
+    }
+   ],
+   "spread": {
+    "stand": 0.45,
+    "crouch": 0.383,
+    "walk": 2,
+    "run": 5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 0.45,
+    "max": 3.5,
+    "recovery": 0.3
+   },
+   "recoil": {
+    "pitchPerShot": 0.6,
+    "yawJitter": 0.25,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "stinger": {
+   "name": "Stinger",
+   "auto": true,
+   "fireRate": 16,
+   "magazine": 20,
+   "reloadTime": 2.25,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 15,
+     "head": 67.5,
+     "body": 27,
+     "legs": 22.95
+    },
+    {
+     "maxRange": 999,
+     "head": 62.5,
+     "body": 25,
+     "legs": 21.25
+    }
+   ],
+   "spread": {
+    "stand": 0.35,
+    "crouch": 0.297,
+    "walk": 2.5,
+    "run": 5.5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 0.35,
+    "max": 4,
+    "recovery": 0.35
+   },
+   "recoil": {
+    "pitchPerShot": 0.45,
+    "yawJitter": 0.3,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "spectre": {
+   "name": "Spectre",
+   "auto": true,
+   "fireRate": 13.33,
+   "magazine": 30,
+   "reloadTime": 2.25,
+   "moveSpeedMul": 0.85,
+   "damage": [
+    {
+     "maxRange": 20,
+     "head": 78,
+     "body": 26,
+     "legs": 22.1
+    },
+    {
+     "maxRange": 999,
+     "head": 66,
+     "body": 22,
+     "legs": 18.7
+    }
+   ],
+   "spread": {
+    "stand": 0.4,
+    "crouch": 0.34,
+    "walk": 2.5,
+    "run": 5.5,
+    "air": 8
+   },
+   "firingError": {
+    "perShot": 0.3,
+    "max": 3.5,
+    "recovery": 0.35
+   },
+   "recoil": {
+    "pitchPerShot": 0.4,
+    "yawJitter": 0.25,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "bulldog": {
+   "name": "Bulldog",
+   "auto": true,
+   "fireRate": 10,
+   "magazine": 24,
+   "reloadTime": 2.5,
+   "moveSpeedMul": 0.8,
+   "damage": [
+    {
+     "maxRange": 999,
+     "head": 115.5,
+     "body": 35,
+     "legs": 29.75
+    }
+   ],
+   "spread": {
+    "stand": 0.3,
+    "crouch": 0.255,
+    "walk": 3,
+    "run": 6,
+    "air": 9
+   },
+   "firingError": {
+    "perShot": 0.35,
+    "max": 3.5,
+    "recovery": 0.35
+   },
+   "recoil": {
+    "pitchPerShot": 0.6,
+    "yawJitter": 0.25,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "guardian": {
+   "name": "Guardian",
+   "auto": false,
+   "fireRate": 5.25,
+   "magazine": 12,
+   "reloadTime": 2.5,
+   "moveSpeedMul": 0.8,
+   "damage": [
+    {
+     "maxRange": 999,
+     "head": 195,
+     "body": 65,
+     "legs": 48.75
+    }
+   ],
+   "spread": {
+    "stand": 0.1,
+    "crouch": 0.085,
+    "walk": 3,
+    "run": 6,
+    "air": 9
+   },
+   "firingError": {
+    "perShot": 0.5,
+    "max": 3,
+    "recovery": 0.3
+   },
+   "recoil": {
+    "pitchPerShot": 1.2,
+    "yawJitter": 0.2,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "phantom": {
+   "name": "Phantom",
+   "auto": true,
+   "fireRate": 11,
+   "magazine": 30,
+   "reloadTime": 2.5,
+   "moveSpeedMul": 0.8,
+   "damage": [
+    {
+     "maxRange": 15,
+     "head": 156,
+     "body": 39,
+     "legs": 33.15
+    },
+    {
+     "maxRange": 30,
+     "head": 140,
+     "body": 35,
+     "legs": 29.75
+    },
+    {
+     "maxRange": 999,
+     "head": 124,
+     "body": 31,
+     "legs": 26.35
+    }
+   ],
+   "spread": {
+    "stand": 0.2,
+    "crouch": 0.17,
+    "walk": 3,
+    "run": 6,
+    "air": 9
+   },
+   "firingError": {
+    "perShot": 0.3,
+    "max": 3,
+    "recovery": 0.35
+   },
+   "recoil": {
+    "pitchPerShot": 0.55,
+    "yawJitter": 0.25,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "vandal": {
+   "name": "Vandal",
+   "auto": true,
+   "fireRate": 9.75,
+   "magazine": 25,
+   "reloadTime": 2.5,
+   "moveSpeedMul": 0.8,
+   "damage": [
+    {
+     "maxRange": 999,
+     "head": 160,
+     "body": 40,
+     "legs": 34
+    }
+   ],
+   "spread": {
+    "stand": 0.25,
+    "crouch": 0.212,
+    "walk": 3,
+    "run": 6,
+    "air": 9
+   },
+   "firingError": {
+    "perShot": 0.35,
+    "max": 3.5,
+    "recovery": 0.35
+   },
+   "recoil": {
+    "pitchPerShot": 0.65,
+    "yawJitter": 0.3,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "ares": {
+   "name": "Ares",
+   "auto": true,
+   "fireRate": 13,
+   "magazine": 50,
+   "reloadTime": 3.25,
+   "moveSpeedMul": 0.76,
+   "damage": [
+    {
+     "maxRange": 30,
+     "head": 75,
+     "body": 30,
+     "legs": 25.5
+    },
+    {
+     "maxRange": 999,
+     "head": 70,
+     "body": 28,
+     "legs": 23.8
+    }
+   ],
+   "spread": {
+    "stand": 1,
+    "crouch": 0.85,
+    "walk": 3.5,
+    "run": 6.5,
+    "air": 10
+   },
+   "firingError": {
+    "perShot": 0.15,
+    "max": 2.5,
+    "recovery": 0.4
+   },
+   "recoil": {
+    "pitchPerShot": 0.35,
+    "yawJitter": 0.3,
+    "recoverRate": 6,
+    "approx": true
+   }
+  },
+  "odin": {
+   "name": "Odin",
+   "auto": true,
+   "fireRate": 12,
+   "magazine": 100,
+   "reloadTime": 5,
+   "moveSpeedMul": 0.76,
+   "damage": [
+    {
+     "maxRange": 30,
+     "head": 95,
+     "body": 38,
+     "legs": 32.3
+    },
+    {
+     "maxRange": 999,
+     "head": 77.5,
+     "body": 31,
+     "legs": 26.35
+    }
+   ],
+   "spread": {
+    "stand": 0.8,
+    "crouch": 0.68,
+    "walk": 3.5,
+    "run": 6.5,
+    "air": 10
+   },
+   "firingError": {
+    "perShot": 0.15,
+    "max": 2.5,
+    "recovery": 0.4
+   },
+   "recoil": {
+    "pitchPerShot": 0.35,
+    "yawJitter": 0.3,
+    "recoverRate": 6,
+    "approx": true
+   }
+  }
+ }
+}
