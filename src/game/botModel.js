@@ -1,11 +1,12 @@
 import * as THREE from 'three';
+import { BOT_HEAD_WIDTH } from '../core/constants.js';
 
 // 발로란트 요원과 비슷한 비율(커뮤니티 측정 기반 근사): 키 약 1.8m, 머리 중심 1.6m, 머리 폭 약 0.25m.
 // 특정 요원을 따라 하지 않는 독자 디자인의 전술 요원이다.
 export const BOT_DIMENSIONS = Object.freeze({
   height: 1.8,
   headCenter: 1.6,
-  head: { w: 0.25, h: 0.28, d: 0.26 },
+  head: { w: BOT_HEAD_WIDTH, h: 0.28, d: 0.26 },
   shoulder: 0.5,
   hipStand: 0.92,
   hipCrouch: 0.56,
