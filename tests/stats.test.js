@@ -47,3 +47,45 @@ test('empty session does not crash', () => {
   expect(s.avgKillTime).toBe(null);
   expect(s.weakest).toBe(null);
 });
+
+test('flick summary splits by flick size and counts over/undershoots', () => {
+  const f = (deg, residual, head) => bot({ mode: 'flick', flickDeg: deg, flickResidual: residual, firstShot: head ? 'head' : 'body', shots: [shot(head ? 'head' : 'body')] });
+  const s = summarize([f(10, 0.5, true), f(30, -1, false), f(60, -2, false), f(70, 1, true)], () => 1);
+  expect(s.flick.bins.map((b) => b.n)).toEqual([1, 1, 2]);
+  expect(s.flick.bins[0].firstShotHeadRate).toBe(1);
+  expect(s.flick.bins[2].firstShotHeadRate).toBe(0.5);
+  expect(s.flick.overshoot).toBe(2);
+  expect(s.flick.undershoot).toBe(2);
+  expect(summarize(bots, () => 1).flick).toBe(null);
+});
+
+test('clear summary counts waves, angles caught off guard and bots that had to be revealed', () => {
+  const c = (wave, err, revealed = false) => bot({ mode: 'clear', wave, placementErr: err, revealed, shots: [shot('head')], firstShot: 'head' });
+  const s = summarize([c(1, { v: 1, h: 2 }), c(1, { v: 5, h: 40 }), c(2, { v: 0, h: 3 }, true), c(2, { v: 20, h: 30 })], () => 1);
+  expect(s.clear).toEqual({ waves: 2, offGuard: 2, revealed: 1 });
+  expect(summarize(bots, () => 1).clear).toBe(null);
+});
+
+test('braking summary counts each kind of shot and voided shots', () => {
+  const b = (kind, ms = null, voided = false) => shot('head', { brake: { kind, accurate: !['moving', 'overheld'].includes(kind), sinceStopMs: ms }, voided });
+  const s = summarize([bot({ shots: [b('still'), b('braked', 80), b('braked', 120), b('coasted', 300), b('moving', null, true), b('overheld')] })], () => 1);
+  expect(s.brake.counts).toEqual({ still: 1, braked: 2, coasted: 1, moving: 1, overheld: 1 });
+  expect(s.brake.afterMoveAccurate).toBeCloseTo(3 / 5);
+  expect(s.brake.voided).toBe(1);
+});
+
+test('braking summary splits tok braking (opposite key) from manse braking (letting go)', () => {
+  const b = (kind, part, sinceStopMs, stopMs) => shot(part, { brake: { kind, accurate: true, sinceStopMs, stopMs } });
+  const s = summarize([bot({ shots: [b('braked', 'head', 80, 60), b('braked', 'body', 120, 80), b('coasted', 'head', 300, 200)] })], () => 1);
+  expect(s.brake.styles.braked).toEqual({ count: 2, avgStopMs: 70, avgShotMs: 100, headRate: 0.5 });
+  expect(s.brake.styles.coasted).toEqual({ count: 1, avgStopMs: 200, avgShotMs: 300, headRate: 1 });
+  const none = summarize([bot({ shots: [b('still', 'head', null, null)] })], () => 1);
+  expect(none.brake.styles.braked).toEqual({ count: 0, avgStopMs: null, avgShotMs: null, headRate: null });
+});
+
+test('strafe summary averages reaction from the cue and counts misses', () => {
+  const s = summarize([bot({ mode: 'strafe', cueAt: 1, reaction: 0.3 }), bot({ mode: 'strafe', cueAt: 2, reaction: 0.5 }), bot({ mode: 'strafe', cueAt: 3, failed: true, killedAt: null })], () => 1);
+  expect(s.strafe.avgReaction).toBeCloseTo(0.4);
+  expect(s.strafe.failed).toBe(1);
+  expect(summarize(bots, () => 1).strafe).toBe(null);
+});

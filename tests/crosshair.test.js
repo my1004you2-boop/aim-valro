@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-import { parseCrosshairCode } from '../src/core/crosshair.js';
+import { parseCrosshairCode, isCrosshairCode } from '../src/core/crosshair.js';
 import { DEFAULT_SETTINGS } from '../src/core/settings.js';
 
 test('user code parses to cyan 1px inner lines', () => {
@@ -37,4 +37,12 @@ test('values outside the primary section are ignored', () => {
 test('garbage input falls back to defaults', () => {
   expect(parseCrosshairCode('').color).toBe('#FFFFFF');
   expect(parseCrosshairCode('0;P;0t;abc').inner.thickness).toBe(2);
+});
+
+test('recognizes whether text is a crosshair code with a primary section', () => {
+  expect(isCrosshairCode('0;s;1;P;c;5;o;0.101;f;0;0t;1;0l;2;0v;2;0o;1;0a;1;0f;0;1b;0;S;s;1.002')).toBe(true);
+  expect(isCrosshairCode('0;P;c;1')).toBe(true);
+  expect(isCrosshairCode('')).toBe(false);
+  expect(isCrosshairCode('hello world')).toBe(false);
+  expect(isCrosshairCode('0;s;1;S;s;1')).toBe(false);
 });

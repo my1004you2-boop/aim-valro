@@ -1,12 +1,11 @@
 {
- "source": "valocheck.com/weapons (fire rate, magazine, base damage), dexerto/dotesports weapon guides (range bands, reload). spread/firingError/recoil/moveSpeedMul는 커뮤니티 수치 기반 근사값",
+ "source": "게임 내 무기 정보 화면(달리기 속도, 장착, 재장전, 탄창, 연사, 초탄 퍼짐, 거리별 피해량; 2026-10). firingError/recoil/걷기·달리기·공중 퍼짐은 커뮤니티 수치 기반 근사값",
  "patch": "11.x (2026-10 조사)",
  "approx": [
-  "spread",
   "firingError",
+  "melee",
   "recoil",
-  "moveSpeedMul",
-  "reloadTime"
+  "spread"
  ],
  "weapons": {
   "classic": {
@@ -47,7 +46,10 @@
     "yawJitter": 0.15,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "pistol",
+   "slot": "secondary",
+   "equipTime": 0.75
   },
   "ghost": {
    "name": "Ghost",
@@ -61,7 +63,7 @@
      "maxRange": 30,
      "head": 105,
      "body": 30,
-     "legs": 25.5
+     "legs": 25
     },
     {
      "maxRange": 999,
@@ -87,7 +89,10 @@
     "yawJitter": 0.15,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "suppressed",
+   "slot": "secondary",
+   "equipTime": 0.75
   },
   "sheriff": {
    "name": "Sheriff",
@@ -95,19 +100,19 @@
    "fireRate": 4,
    "magazine": 6,
    "reloadTime": 2.25,
-   "moveSpeedMul": 0.85,
+   "moveSpeedMul": 0.8,
    "damage": [
     {
      "maxRange": 30,
      "head": 159,
      "body": 55,
-     "legs": 46.75
+     "legs": 46
     },
     {
      "maxRange": 999,
      "head": 145,
      "body": 50,
-     "legs": 42.5
+     "legs": 42
     }
    ],
    "spread": {
@@ -127,7 +132,10 @@
     "yawJitter": 0.3,
     "recoverRate": 5,
     "approx": true
-   }
+   },
+   "sound": "heavyPistol",
+   "slot": "secondary",
+   "equipTime": 1
   },
   "frenzy": {
    "name": "Frenzy",
@@ -141,18 +149,18 @@
      "maxRange": 20,
      "head": 78,
      "body": 26,
-     "legs": 22.1
+     "legs": 22
     },
     {
      "maxRange": 999,
      "head": 63,
      "body": 21,
-     "legs": 17.85
+     "legs": 17
     }
    ],
    "spread": {
-    "stand": 0.45,
-    "crouch": 0.383,
+    "stand": 0.65,
+    "crouch": 0.552,
     "walk": 2,
     "run": 5,
     "air": 8
@@ -167,7 +175,10 @@
     "yawJitter": 0.25,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "pistol",
+   "slot": "secondary",
+   "equipTime": 1
   },
   "stinger": {
    "name": "Stinger",
@@ -179,20 +190,20 @@
    "damage": [
     {
      "maxRange": 15,
-     "head": 67.5,
+     "head": 67,
      "body": 27,
-     "legs": 22.95
+     "legs": 22
     },
     {
      "maxRange": 999,
-     "head": 62.5,
-     "body": 25,
-     "legs": 21.25
+     "head": 57,
+     "body": 23,
+     "legs": 19
     }
    ],
    "spread": {
-    "stand": 0.35,
-    "crouch": 0.297,
+    "stand": 0.65,
+    "crouch": 0.552,
     "walk": 2.5,
     "run": 5.5,
     "air": 8
@@ -207,7 +218,10 @@
     "yawJitter": 0.3,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "smg",
+   "slot": "primary",
+   "equipTime": 0.75
   },
   "spectre": {
    "name": "Spectre",
@@ -218,16 +232,22 @@
    "moveSpeedMul": 0.85,
    "damage": [
     {
-     "maxRange": 20,
+     "maxRange": 15,
      "head": 78,
      "body": 26,
-     "legs": 22.1
+     "legs": 22
+    },
+    {
+     "maxRange": 30,
+     "head": 66,
+     "body": 22,
+     "legs": 18
     },
     {
      "maxRange": 999,
-     "head": 66,
-     "body": 22,
-     "legs": 18.7
+     "head": 60,
+     "body": 20,
+     "legs": 17
     }
    ],
    "spread": {
@@ -247,7 +267,10 @@
     "yawJitter": 0.25,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "suppressed",
+   "slot": "primary",
+   "equipTime": 0.75
   },
   "bulldog": {
    "name": "Bulldog",
@@ -259,9 +282,9 @@
    "damage": [
     {
      "maxRange": 999,
-     "head": 115.5,
+     "head": 115,
      "body": 35,
-     "legs": 29.75
+     "legs": 29
     }
    ],
    "spread": {
@@ -281,7 +304,10 @@
     "yawJitter": 0.25,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "rifle",
+   "slot": "primary",
+   "equipTime": 1.0
   },
   "guardian": {
    "name": "Guardian",
@@ -295,7 +321,7 @@
      "maxRange": 999,
      "head": 195,
      "body": 65,
-     "legs": 48.75
+     "legs": 48
     }
    ],
    "spread": {
@@ -315,7 +341,10 @@
     "yawJitter": 0.2,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "marksman",
+   "slot": "primary",
+   "equipTime": 1.0
   },
   "phantom": {
    "name": "Phantom",
@@ -326,22 +355,16 @@
    "moveSpeedMul": 0.8,
    "damage": [
     {
-     "maxRange": 15,
+     "maxRange": 20,
      "head": 156,
      "body": 39,
-     "legs": 33.15
-    },
-    {
-     "maxRange": 30,
-     "head": 140,
-     "body": 35,
-     "legs": 29.75
+     "legs": 33
     },
     {
      "maxRange": 999,
-     "head": 124,
-     "body": 31,
-     "legs": 26.35
+     "head": 140,
+     "body": 35,
+     "legs": 29
     }
    ],
    "spread": {
@@ -361,7 +384,10 @@
     "yawJitter": 0.25,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "suppressed",
+   "slot": "primary",
+   "equipTime": 1.0
   },
   "vandal": {
    "name": "Vandal",
@@ -395,7 +421,10 @@
     "yawJitter": 0.3,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "rifle",
+   "slot": "primary",
+   "equipTime": 1.0
   },
   "ares": {
    "name": "Ares",
@@ -409,13 +438,13 @@
      "maxRange": 30,
      "head": 75,
      "body": 30,
-     "legs": 25.5
+     "legs": 25
     },
     {
      "maxRange": 999,
      "head": 70,
      "body": 28,
-     "legs": 23.8
+     "legs": 23
     }
    ],
    "spread": {
@@ -435,7 +464,10 @@
     "yawJitter": 0.3,
     "recoverRate": 6,
     "approx": true
-   }
+   },
+   "sound": "lmg",
+   "slot": "primary",
+   "equipTime": 1.25
   },
   "odin": {
    "name": "Odin",
@@ -449,13 +481,13 @@
      "maxRange": 30,
      "head": 95,
      "body": 38,
-     "legs": 32.3
+     "legs": 32
     },
     {
      "maxRange": 999,
-     "head": 77.5,
+     "head": 77,
      "body": 31,
-     "legs": 26.35
+     "legs": 26
     }
    ],
    "spread": {
@@ -475,6 +507,26 @@
     "yawJitter": 0.3,
     "recoverRate": 6,
     "approx": true
+   },
+   "sound": "lmg",
+   "slot": "primary",
+   "equipTime": 1.25
+  }
+ },
+ "melee": {
+  "knife": {
+   "name": "Knife",
+   "melee": true,
+   "range": 2.0,
+   "equipTime": 0.5,
+   "moveSpeedMul": 1.0,
+   "light": {
+    "damage": 50,
+    "interval": 0.45
+   },
+   "heavy": {
+    "damage": 75,
+    "interval": 1.0
    }
   }
  }

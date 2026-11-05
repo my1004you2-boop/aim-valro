@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import * as THREE from 'three';
-import { castShot, aimedPart } from '../src/game/shooting.js';
+import { castShot, aimedPart, castMelee } from '../src/game/shooting.js';
 import { createBotModel } from '../src/game/botModel.js';
 
 const colors = { head: '#f00', body: '#333', legs: '#222' };
@@ -62,4 +62,17 @@ test('miss into the sky', () => {
 test('aimedPart ignores spread and reports the aimed part', () => {
   const { bot, worldMeshes } = setup();
   expect(aimedPart(eye, toward(bot.headWorldPos()), bot.hitboxes, worldMeshes)).toBe('head');
+});
+
+test('wall hit reports a surface normal facing the shooter', () => {
+  const { bot, worldMeshes } = setup(true);
+  const r = castShot({ origin: eye, dir: toward(bot.headWorldPos()), worldMeshes, botHitboxes: bot.hitboxes });
+  expect(r.normal.z).toBeCloseTo(1, 5);
+});
+
+test('melee reaches only within its range', () => {
+  const { bot, worldMeshes } = setup();
+  const near = new THREE.Vector3(0, 1.6, -8.5);
+  expect(castMelee({ origin: near, dir: toward(bot.headWorldPos()), range: 2, worldMeshes, botHitboxes: bot.hitboxes }).part).toBe('head');
+  expect(castMelee({ origin: eye, dir: toward(bot.headWorldPos()), range: 2, worldMeshes, botHitboxes: bot.hitboxes }).part).toBe(null);
 });

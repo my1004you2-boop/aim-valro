@@ -5,13 +5,14 @@ import { buildWorld } from './world.js';
 import { createSession } from './session.js';
 import { createAudio } from './audio.js';
 import { createCrosshairOverlay } from './crosshairView.js';
+import { createViewmodel } from './viewmodel.js';
 import { verticalFovDeg } from '../core/fov.js';
 import { parseCrosshairCode } from '../core/crosshair.js';
 import { parseSettingsText } from '../core/settings.js';
-import { createPlayer, stepPlayer, eyeHeight } from '../core/physics.js';
+import { createPlayer, stepPlayer, eyeHeight, speedFraction } from '../core/physics.js';
 import { summarize } from '../core/stats.js';
 import { headSizeDeg } from '../core/aim.js';
-import { renderMenu, renderSettings, renderPause } from '../ui/menu.js';
+import { renderMenu, renderSettings, renderPause, renderShop } from '../ui/menu.js';
 import { createHud } from '../ui/hud.js';
 import { renderResults } from '../ui/results.js';
 import { sessionFileName } from '../ui/format.js';
@@ -33,25 +34,29 @@ const api = window.api ?? {
 export async function startApp(canvas) {
   let settings = parseSettingsText(await api.loadSettings());
   const weapons = weaponData.weapons;
+  const knife = weaponData.melee.knife;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.autoClear = false;
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#2a3140');
-  scene.fog = new THREE.Fog('#2a3140', 70, 160);
-  scene.add(new THREE.HemisphereLight('#e3ebff', '#2b2f38', 1.3));
-  const sun = new THREE.DirectionalLight('#fff4e6', 1.4);
-  sun.position.set(20, 40, 15);
+  scene.background = new THREE.Color('#9fb3c4');
+  scene.fog = new THREE.Fog('#9fb3c4', 60, 140);
+  scene.add(new THREE.HemisphereLight('#dfe9f5', '#5a5248', 1.25));
+  const sun = new THREE.DirectionalLight('#fff0dc', 1.7);
+  sun.position.set(-18, 40, 12);
   scene.add(sun);
   const world = buildWorld(scene, range);
 
   const camera = new THREE.PerspectiveCamera(70.53, 1, 0.03, 300);
   camera.rotation.order = 'YXZ';
+  const viewmodel = createViewmodel();
   const resize = () => {
     renderer.setSize(window.innerWidth, window.innerHeight, false);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.fov = verticalFovDeg(settings.hfov, camera.aspect);
     camera.updateProjectionMatrix();
+    viewmodel.setAspect(camera.aspect);
   };
   window.addEventListener('resize', resize);
   resize();
@@ -69,9 +74,20 @@ export async function startApp(canvas) {
   let hud = null;
   let gameNow = 0;
   let debug = false;
+  let gunShown = null;
 
   const eye = () => new THREE.Vector3(player.pos.x, player.pos.y + eyeHeight(player, M), player.pos.z);
   const saveSettings = () => api.saveSettings(JSON.stringify(settings, null, 2));
+  // 총알 궤적 시작점: 화면에 보이는 총구 위치에서 0.6m 앞
+  const muzzle = () => {
+    const e = eye();
+    camera.position.copy(e);
+    camera.rotation.set(look.pitch, look.yaw, 0);
+    camera.updateMatrixWorld();
+    const ndc = viewmodel.muzzleNdc();
+    const dir = new THREE.Vector3(ndc.x, ndc.y, 0.5).unproject(camera).sub(e).normalize();
+    return e.addScaledVector(dir, 0.6);
+  };
 
   function resetPlayer() {
     player = createPlayer(range.spawn);
@@ -101,6 +117,7 @@ export async function startApp(canvas) {
       onSave(next) {
         settings = next;
         look.sens = settings.mouse.sens;
+        crosshair.set(parseCrosshairCode(settings.crosshairCode));
         saveSettings();
         showMenu();
       },
@@ -118,15 +135,19 @@ export async function startApp(canvas) {
     gameNow = 0;
     session = createSession({
       mode: choice.mode,
-      weaponId: choice.weapon,
+      loadout: { primary: choice.primary, secondary: choice.secondary },
       judge: choice.judge,
       armor: choice.judge === 'kill' ? choice.armor : 0,
+      botFire: choice.botFire,
+      brakeJudge: !!choice.brakeJudge,
       settings,
-      covers: range.covers,
-      ctx: { scene, look, player, world, input, M, weapons, armorRules, audio, eye },
+      walls: range.walls,
+      ctx: { scene, look, player, world, input, M, weapons, knife, armorRules, audio, eye, muzzle },
     });
+    gunShown = choice.primary;
+    viewmodel.setWeapon(choice.primary);
     session.setDebug(debug);
-    hud = createHud(ui);
+    hud = createHud(ui, { brakeIndicator: settings.brake.indicator, speedBar: settings.brake.speedBar, inputOverlay: settings.display.inputOverlay, keys: settings.keys });
     crosshair.setVisible(true);
     state = 'playing';
     lockOrPause();
@@ -148,7 +169,7 @@ export async function startApp(canvas) {
     state = 'paused';
     renderPause(ui, {
       onResume() {
-        hud = createHud(ui);
+        hud = createHud(ui, { brakeIndicator: settings.brake.indicator, speedBar: settings.brake.speedBar, inputOverlay: settings.display.inputOverlay, keys: settings.keys });
         state = 'playing';
         lockOrPause();
       },
@@ -157,13 +178,40 @@ export async function startApp(canvas) {
     });
   }
 
+  // 무기 교환 창: 잠금을 풀고 시간을 멈춘다(일시정지 메뉴는 띄우지 않는다).
+  function openShop() {
+    if (state !== 'playing') return;
+    state = 'shop';
+    input.exitLock();
+    renderShop(ui, {
+      weapons,
+      loadout: session.loadout(),
+      onBuy(slot, id) {
+        session.buy(slot, id, gameNow);
+        sel[slot] = id;
+      },
+      onClose: closeShop,
+    });
+  }
+
+  function closeShop() {
+    if (state !== 'shop') return;
+    hud = createHud(ui, { brakeIndicator: settings.brake.indicator, speedBar: settings.brake.speedBar, inputOverlay: settings.display.inputOverlay, keys: settings.keys });
+    state = 'playing';
+    lockOrPause();
+  }
+
   function showResults() {
     state = 'results';
     input.exitLock();
     crosshair.setVisible(false);
     const records = session.records();
     const summary = summarize(records, headSizeDeg);
-    const meta = { mode: sel.mode, weapon: sel.weapon, weaponName: weapons[sel.weapon].name, judge: sel.judge, armor: sel.judge === 'kill' ? sel.armor : 0 };
+    const meta = {
+      mode: sel.mode, primary: sel.primary, secondary: sel.secondary,
+      weaponName: `${weapons[sel.primary].name} / ${weapons[sel.secondary].name}`,
+      judge: sel.judge, armor: sel.judge === 'kill' ? sel.armor : 0, botFire: sel.botFire, brakeJudge: !!sel.brakeJudge,
+    };
     session.dispose();
     session = null;
     const view = renderResults(ui, { summary, meta, onRetry: () => startSession(sel), onMenu: showMenu });
@@ -186,8 +234,13 @@ export async function startApp(canvas) {
       debug = !debug;
       session?.setDebug(debug);
     }
+    if (e.code === 'KeyB') {
+      if (state === 'playing') openShop();
+      else if (state === 'shop') closeShop();
+    }
+    if (e.code === 'Escape' && state === 'shop') closeShop();
     if (e.code === 'F10' && state === 'menu') {
-      startSession({ mode: 'peek', weapon: 'vandal', judge: 'head', armor: 0 });
+      startSession({ mode: 'peek', primary: 'vandal', secondary: 'classic', judge: 'head', armor: 0, botFire: 'off', brakeJudge: false });
     }
   });
 
@@ -201,8 +254,10 @@ export async function startApp(canvas) {
     const dt = Math.min(0.1, (t - last) / 1000);
     last = t;
 
+    let mouse = { dx: 0, dy: 0 };
     if (state === 'playing' && (input.locked || DEV_NO_LOCK)) {
       const { dx, dy } = input.consumeMouse();
+      mouse = { dx, dy };
       look.applyMouse(dx, dy, true);
       const k = settings.keys;
       const has = (code) => input.keys.has(code);
@@ -219,7 +274,7 @@ export async function startApp(canvas) {
         world.boxes,
         dt,
         M,
-        weapons[sel.weapon].moveSpeedMul,
+        session.hud().moveSpeedMul,
       );
       gameNow += dt;
       session.update(dt, gameNow);
@@ -231,8 +286,30 @@ export async function startApp(canvas) {
     const e = eye();
     camera.position.copy(e);
     camera.rotation.set(look.pitch, look.yaw, 0);
-    if (state === 'playing' && hud) hud.update(session.hud(), input.locked);
+    const showGun = session && (state === 'playing' || state === 'paused' || state === 'shop');
+    if (state === 'playing' && hud) hud.update(session.hud(), input.locked, { keys: input.keys, left: input.mouseDown, right: input.rightDown });
+    if (showGun) {
+      const h = session.hud();
+      if (h.weaponId !== gunShown) {
+        gunShown = h.weaponId;
+        viewmodel.setWeapon(h.weaponId);
+      }
+      viewmodel.update(state === 'playing' ? dt : 0, {
+        now: gameNow,
+        shotAt: h.shotAt,
+        reloadProgress: h.reloadProgress,
+        speed: player.onGround ? Math.min(1, speedFraction(player, M)) : 0,
+        dx: mouse.dx,
+        dy: mouse.dy,
+      });
+    }
+    audio.setListener(e, look.forward());
+    renderer.clear();
     renderer.render(scene, camera);
+    if (showGun) {
+      renderer.clearDepth();
+      renderer.render(viewmodel.scene, viewmodel.camera);
+    }
     input.endFrame();
 
     frames++;

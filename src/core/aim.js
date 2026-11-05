@@ -12,7 +12,7 @@ export function angleOffsets(forward, toTarget) {
   return { v: deg(pitchOf(toTarget) - pitchOf(forward)), h };
 }
 
-// 발로란트: 최고 속도의 30% 이하에서 정확하다.
+// 발로란트 데드존: 최고 속도의 27.5%(M.accurateSpeedFraction) 이하에서 정확하다.
 export function stanceOf(p, M) {
   if (!p.onGround) return 'air';
   const f = speedFraction(p, M);

@@ -51,6 +51,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hint { color: var(--muted); font-size: 12px; margin-top: 18px; line-height: 1.7; }
 .kbd { display: inline-block; border: 1px solid var(--line); padding: 0 6px; font: 12px Consolas, monospace; color: var(--text); }
 
+.form input[type="text"] { width: 520px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 8px; font: 13px Consolas, monospace; }
+.xh { display: flex; flex-direction: column; gap: 8px; }
+.xh canvas { border: 1px solid var(--line); image-rendering: pixelated; }
+
+/* 무기 교환 창: 게임 화면이 비쳐 보이게 더 옅게 */
+.screen.shop { background: rgba(10, 12, 16, 0.6); backdrop-filter: none; }
+
 /* 설정 */
 .form { display: grid; grid-template-columns: 220px 1fr; gap: 12px 18px; align-items: center; }
 .form input[type="number"] { width: 120px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 8px; font: inherit; }
@@ -67,6 +74,44 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hud .ammo .m { color: var(--muted); font-size: 18px; }
 .hud .ammo .w { color: var(--muted); font-size: 13px; letter-spacing: 0.1em; }
 .hud .reload { color: var(--warn); font-size: 14px; }
+.hud .slots { position: absolute; right: 36px; bottom: 112px; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.hud .slots span { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-shadow: 0 1px 2px #000; }
+.hud .slots span.on { color: var(--text); font-weight: 700; }
+.hud .slots i { font-style: normal; display: inline-block; width: 18px; margin-right: 6px; text-align: center; border: 1px solid var(--line); }
+.hud .vitals { position: absolute; left: 36px; bottom: 28px; gap: 18px; align-items: baseline; text-shadow: 0 1px 2px #000; }
+.hud .vitals .hp { font-size: 40px; font-weight: 700; }
+.hud .vitals .ar { font-size: 20px; color: var(--cyan); }
+.hud .vitals .ar::before { content: '방어구 '; font-size: 12px; color: var(--muted); }
+.hud .hurt { position: absolute; inset: 0; opacity: 0; box-shadow: inset 0 0 160px 40px rgba(255, 40, 50, 0.8); }
+.hud .dead { display: none; position: absolute; top: 40%; left: 50%; transform: translateX(-50%); font-size: 28px; font-weight: 800;
+  color: var(--accent); background: rgba(10, 12, 16, 0.7); padding: 12px 24px; }
+.hud .brake { position: absolute; top: calc(50% + 34px); left: 50%; transform: translateX(-50%); font-size: 14px; font-weight: 700;
+  padding: 2px 8px; background: rgba(10, 12, 16, 0.55); opacity: 0; white-space: nowrap; }
+.hud .speedbar { position: absolute; top: calc(50% + 24px); left: 50%; transform: translateX(-50%); width: 96px; height: 5px;
+  background: rgba(10, 12, 16, 0.55); outline: 1px solid rgba(255, 255, 255, 0.15); }
+.hud .speedbar .fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+.hud .speedbar.in .fill { background: var(--good); }
+.hud .speedbar .mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: #fff; }
+.hud .brake.ok { color: #e8ecf1; }
+.hud .brake.tok { color: var(--good); }
+.hud .brake.manse { color: #6cc6ff; }
+.hud .brake.bad { color: var(--accent); }
+.hud .brake.over { color: var(--warn); }
+.hud .strafe { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); font-size: 15px; color: var(--muted); text-shadow: 0 1px 2px #000; }
+.hud .strafe.cue { color: var(--good); font-weight: 800; font-size: 18px; }
+/* 입력 표시 */
+.hud .kbview { position: absolute; left: 36px; bottom: 96px; }
+.hud .kbview .k { position: absolute; height: 34px; display: flex; align-items: center; justify-content: center; font-size: 12px;
+  color: rgba(236, 232, 225, 0.75); background: rgba(10, 12, 16, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 4px; }
+.hud .kbview .k.on { color: #0f1115; background: var(--text); border-color: var(--text); font-weight: 700; }
+.hud .mouseview { position: absolute; right: 40px; bottom: 196px; width: 56px; height: 86px; }
+.hud .mouseview .body { position: absolute; left: 0; top: 36px; width: 56px; height: 50px; background: rgba(10, 12, 16, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.18); border-top: 0; border-radius: 0 0 26px 26px; }
+.hud .mouseview .mb { position: absolute; top: 0; width: 27px; height: 36px; background: rgba(10, 12, 16, 0.45); border: 1px solid rgba(255, 255, 255, 0.18); }
+.hud .mouseview .mb.l { left: 0; border-radius: 26px 0 0 0; }
+.hud .mouseview .mb.r { right: 0; border-radius: 0 26px 0 0; }
+.hud .mouseview .mb.on { background: var(--accent); border-color: var(--accent); }
+.hud .mouseview .wheel { position: absolute; left: 24px; top: 8px; width: 8px; height: 16px; border-radius: 4px; background: rgba(236, 232, 225, 0.5); z-index: 1; }
 .hud .clickhint { position: absolute; top: 58%; left: 50%; transform: translateX(-50%); color: var(--muted); font-size: 14px; }
 
 /* 결과 */

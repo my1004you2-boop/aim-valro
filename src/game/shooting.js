@@ -7,8 +7,15 @@ raycaster.far = 100;
 export function castShot({ origin, dir, worldMeshes, botHitboxes }) {
   raycaster.set(origin, dir);
   const hit = raycaster.intersectObjects([...worldMeshes, ...botHitboxes], false)[0];
-  if (!hit) return { part: null, point: null, distance: Infinity };
-  return { part: hit.object.userData.part ?? null, point: hit.point, distance: hit.distance };
+  if (!hit) return { part: null, point: null, normal: null, distance: Infinity, object: null };
+  const normal = hit.face ? hit.face.normal.clone().transformDirection(hit.object.matrixWorld) : null;
+  return { part: hit.object.userData.part ?? null, point: hit.point, normal, distance: hit.distance, object: hit.object };
+}
+
+// 근접 공격: range(m) 안에서 맞은 것만 인정한다.
+export function castMelee({ origin, dir, range, worldMeshes, botHitboxes }) {
+  const r = castShot({ origin, dir, worldMeshes, botHitboxes });
+  return r.distance <= range ? r : { part: null, point: null, normal: null, distance: Infinity, object: null };
 }
 
 export function aimedPart(origin, aimDir, botHitboxes, worldMeshes) {

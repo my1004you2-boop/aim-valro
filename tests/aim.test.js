@@ -24,7 +24,10 @@ test('stanceOf picks air, run, walk, crouch, stand', () => {
   expect(stanceOf(p(M.runSpeed * 0.8), M)).toBe('run');
   expect(stanceOf(p(M.runSpeed * 0.45), M)).toBe('walk');
   expect(stanceOf(p(M.runSpeed * 0.2, true, 1), M)).toBe('crouch');
-  expect(stanceOf(p(M.runSpeed * 0.29), M)).toBe('stand');
+  expect(stanceOf(p(M.runSpeed * 0.27), M)).toBe('stand');
+  // 데드존: 최고 속도의 27.5%까지
+  expect(M.accurateSpeedFraction).toBe(0.275);
+  expect(stanceOf(p(M.runSpeed * 0.285), M)).toBe('walk');
 });
 
 test('headSizeDeg is the angular width of a 0.25 m head', () => {

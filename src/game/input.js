@@ -4,6 +4,7 @@ export function createInput(canvas) {
   const input = {
     keys: new Set(),
     mouseDown: false,
+    rightDown: false,
     pressedThisFrame: false,
     locked: false,
     rawSupported: null,
@@ -48,6 +49,7 @@ export function createInput(canvas) {
     if (!input.locked) {
       input.keys.clear();
       input.mouseDown = false;
+      input.rightDown = false;
       input.dx = 0;
       input.dy = 0;
     }
@@ -59,13 +61,17 @@ export function createInput(canvas) {
     input.dy += e.movementY;
   });
   document.addEventListener('mousedown', (e) => {
-    if (!input.locked || e.button !== 0) return;
+    if (!input.locked) return;
+    if (e.button === 2) input.rightDown = true;
+    if (e.button !== 0) return;
     input.mouseDown = true;
     input.pressedThisFrame = true;
   });
   document.addEventListener('mouseup', (e) => {
     if (e.button === 0) input.mouseDown = false;
+    if (e.button === 2) input.rightDown = false;
   });
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
   window.addEventListener('keydown', (e) => {
     if (!input.locked) return;
     if (e.code !== 'F11' && e.code !== 'F12') e.preventDefault();
@@ -75,6 +81,7 @@ export function createInput(canvas) {
   window.addEventListener('blur', () => {
     input.keys.clear();
     input.mouseDown = false;
+    input.rightDown = false;
   });
   return input;
 }

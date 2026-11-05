@@ -1,11 +1,11 @@
 {
-  "source": "vlr.gg/416153 (knife 6.75 m/s), sportskeeda (patch 0.50: accurate below 30% of max speed); 나머지는 커뮤니티 측정값 기반 근사",
+  "source": "vlr.gg/416153 (knife 6.75 m/s), 데드존: 최고 속도의 27.5% 이하에서 정지와 같은 정확도(최근 패치, 이전 0.50 패치는 30%); 나머지는 커뮤니티 측정값 기반 근사",
   "patch": "11.x (2026-10 조사)",
   "approx": ["walkMul", "crouchMul", "accel", "friction", "stopSpeed", "jumpVelocity", "gravity", "airControl", "eyeStand", "eyeCrouch", "height", "crouchHeight", "stepHeight", "crouchTransition"],
   "runSpeed": 6.75,
   "walkMul": 0.52,
   "crouchMul": 0.5,
-  "accurateSpeedFraction": 0.3,
+  "accurateSpeedFraction": 0.275,
   "accel": 10,
   "friction": 9,
   "stopSpeed": 2.2,

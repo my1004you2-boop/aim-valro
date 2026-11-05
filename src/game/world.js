@@ -16,7 +16,8 @@ export function buildWorld(scene, rangeData) {
     if (!byColor.has(color)) byColor.set(color, []);
     byColor.get(color).push(g);
     edges.push(new THREE.EdgesGeometry(g));
-    boxes.push({ min: { ...b.min }, max: { ...b.max } });
+    // 장식(창문, 처마 등)은 그리기만 하고 충돌에는 넣지 않는다.
+    if (!b.deco) boxes.push({ min: { ...b.min }, max: { ...b.max } });
   }
 
   const meshes = [];
@@ -29,7 +30,7 @@ export function buildWorld(scene, rangeData) {
   }
   const lines = new THREE.LineSegments(
     mergeGeometries(edges),
-    new THREE.LineBasicMaterial({ color: '#0d0f13', transparent: true, opacity: 0.6 }),
+    new THREE.LineBasicMaterial({ color: '#0d0f13', transparent: true, opacity: 0.3 }),
   );
   scene.add(lines);
   edges.forEach((g) => g.dispose());

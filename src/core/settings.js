@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS = Object.freeze({
   keys: {
     forward: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD',
     walk: 'ShiftLeft', crouch: 'ControlLeft', jump: 'Space', reload: 'KeyR',
+    slot1: 'Digit1', slot2: 'Digit2', slot3: 'Digit3',
   },
   session: { botCount: 30, nextBotDelay: [0.5, 1.5], coverHighlight: true },
   buckets: {
@@ -15,9 +16,15 @@ export const DEFAULT_SETTINGS = Object.freeze({
   },
   peek: { wideRatio: 0.5, exposedTime: [0.25, 0.9], hiddenTime: [0.3, 1.2] },
   micro: { offsetDeg: [1, 4], timeLimit: 1.5, holdTime: 0.3, botStrafe: true },
+  flick: { angleDeg: [8, 75], distance: [6, 40], timeLimit: 1.5 },
+  clear: { waveSize: 4, revealAfter: 25 },
+  strafe: { angleDeg: [0, 12], distance: [10, 25], moveTime: [0.4, 1.2], timeLimit: 1.2 },
+  brake: { indicator: true, speedBar: true },
+  display: { inputOverlay: true },
   bot: { colors: { head: '#ff4655', body: '#3a4250', legs: '#2a303a' } },
-  audio: { enabled: true, volume: 0.6 },
-  last: { mode: 'peek', weapon: 'vandal', judge: 'head', armor: 0 },
+  audio: { enabled: true, volume: 0.6, footsteps: true },
+  effects: { tracers: true, impacts: true },
+  last: { mode: 'peek', primary: 'vandal', secondary: 'classic', judge: 'head', armor: 0, botFire: 'off', brakeJudge: false },
 });
 
 const isPlainObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);

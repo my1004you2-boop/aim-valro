@@ -20,6 +20,11 @@ function readPrimary(code) {
   return kv;
 }
 
+// 주 조준선(P) 섹션에 값이 하나라도 있으면 조준선 코드로 본다.
+export function isCrosshairCode(code) {
+  return Object.keys(readPrimary(code)).length > 0;
+}
+
 export function parseCrosshairCode(code) {
   const kv = readPrimary(code);
   const num = (k, def) => {
